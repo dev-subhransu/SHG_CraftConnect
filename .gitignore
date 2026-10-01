@@ -1,0 +1,41 @@
+# ========================
+# 1. SECRET & ENV FILES (Very Important)
+# ========================
+.env
+backend/.env
+frontend/.env
+*.pem
+secrets/
+
+# ========================
+# 2. PYTHON / BACKEND
+# ========================
+__pycache__/
+*.py[cod]
+*$py.class
+backend/venv/
+backend/env/
+.pytest_cache/
+*.sqlite3
+*.db
+
+# ========================
+# 3. FLUTTER / FRONTEND
+# ========================
+frontend/build/
+frontend/.dart_tool/
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+frontend/.packages
+frontend/windows/flutter/ephemeral/
+frontend/macos/Flutter/ephemeral/
+frontend/ios/Pods/
+frontend/ios/.symlinks/
+
+# ========================
+# 4. IDE & SYSTEM FILES
+# ========================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
