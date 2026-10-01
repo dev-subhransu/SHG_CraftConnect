@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database Container
+  postgres:
+    image: postgres:16-alpine
+    container_name: artisan_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: artisan_user
+      POSTGRES_PASSWORD: artisan_password
+      POSTGRES_DB: artisan_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U artisan_user -d artisan_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI Backend Container
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: artisan_backend
+    restart: unless-stopped
+    environment:
+      - ENVIRONMENT=development
+      - DEBUG=True
+      - PORT=8000
+      - DATABASE_URL=postgresql+psycopg2://artisan_user:artisan_password@postgres:5432/artisan_db
+      - PAYMENT_PROVIDER=mock
+      - PLATFORM_FEE_PERCENTAGE=5.0
+      - CORS_ORIGINS=*
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  postgres_data:
+    driver: local
